@@ -31,7 +31,8 @@ class Query(BaseModel):
 
 @app.get("/api/stats")
 def get_stats():
-    # Returns the exact configuration you used during ingestion
+
+    # Returns the exact configuration used during ingestion
     return {
         "chunk_size": 500,
         "overlap_ratio": 0.2,
@@ -40,20 +41,21 @@ def get_stats():
 
 @app.post("/api/prompt")
 def generate_response(query: Query):
-    # 1. Embed the user's incoming question
+
+    # Embed the user's incoming question
     question_embedding = client.embeddings.create(
         input=query.question,
         model="ZYRANGG-text-embedding-3-small"
     ).data[0].embedding
 
-    # 2. Search Pinecone for the top 5 most relevant chunks
+    # Search Pinecone for the top 5 most relevant chunks
     search_results = index.query(
         vector=question_embedding,
         top_k=5, 
         include_metadata=True
     )
 
-    # 3. Format the retrieved text to pass to the LLM and the JSON output
+    # Format the retrieved text to pass to the LLM and the JSON output
     context_text = ""
     context_output = []
     
@@ -69,8 +71,8 @@ def generate_response(query: Query):
                 f"\nTags: {meta.get('tags')}"
                 f"\nPassage: {meta.get('chunk')}\n---"
             )
-                    
-        # Build the exact JSON array required by the assignment
+
+        # Build the JSON dictionary
         context_output.append({
             "article_id": meta['article_id'],
             "title": meta['title'],
@@ -78,10 +80,10 @@ def generate_response(query: Query):
             "score": float(match.score)
         })
 
-    # 4. Construct the final prompt
+    # Construct the final prompt
     user_prompt = f"Question: {query.question}\n\nContext:\n{context_text}"
 
-    # 5. Call the LLMod.ai LLM with the strict guardrails
+    # Call the LLM
     llm_response = client.chat.completions.create(
         model="ZYRANGG-gpt-5-mini",
         messages=[
@@ -92,7 +94,7 @@ def generate_response(query: Query):
 
     final_answer = llm_response.choices[0].message.content
 
-    # 6. Return the perfectly formatted JSON dictionary
+    # Return the JSON dictionary
     return {
         "response": final_answer,
         "context": context_output,

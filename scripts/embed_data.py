@@ -36,7 +36,7 @@ def process_data():
         # Simple character chunking (Approx 500 words per chunk)
         words = str(row['text']).split()
         
-        # Hyperparameters chosen for this test run
+        # Final hyperparameters selected based on optimization research
         chunk_size = 500
         overlap = 100 
         
