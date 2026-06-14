@@ -24,7 +24,7 @@ def process_data():
     # Read the csv
     df = pd.read_csv('data/medium-english-50mb.csv') 
     
-    # We process chunks in batches to save time and API calls
+    # Process chunks in batches
     batch_size = 100
     vectors_to_upsert = []
     total_chunks = 0
