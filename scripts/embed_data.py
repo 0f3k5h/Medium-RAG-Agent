@@ -14,7 +14,7 @@ index = pc.Index("medium-rag-index")
 def get_embedding(text):
     response = client.embeddings.create(
         input=text,
-        model="ZYRANGG-text-embedding-3-small"
+        model="NBUECSE-text-embedding-3-small"
     )
     return response.data[0].embedding
 
