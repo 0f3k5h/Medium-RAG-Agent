@@ -45,7 +45,7 @@ def generate_response(query: Query):
     # Embed the user's incoming question
     question_embedding = client.embeddings.create(
         input=query.question,
-        model="ZYRANGG-text-embedding-3-small"
+        model="NBUECSE-text-embedding-3-small"
     ).data[0].embedding
 
     # Search Pinecone for the top 5 most relevant chunks
@@ -85,7 +85,7 @@ def generate_response(query: Query):
 
     # Call the LLM
     llm_response = client.chat.completions.create(
-        model="ZYRANGG-gpt-5-mini",
+        model="NBUECSE-gpt-5-mini",
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": user_prompt}
